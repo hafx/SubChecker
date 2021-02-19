@@ -6,10 +6,10 @@ domain=$2
 
 #calculate the number of days remaining before the registry expiration date
 function dayRemaining () {
-whois $domain | grep "Registry Expiry Date" | cut -d'T' -f1 | cut -d':' -f2 | cut -d ' ' -f2 > expiration
-expiration=`cat expiration`
-date +"%y-%m-%d" > today
-today=`cat today`
+whois $domain | grep "Registry Expiry Date" | cut -d'T' -f1 | cut -d':' -f2 | cut -d ' ' -f2 > tmp/expiration
+expiration=`cat tmp/expiration`
+date +"%y-%m-%d" > tmp/today
+today=`cat tmp/today`
 echo -e Registry expiry date "\e[1;29m $domain\e[0m" : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left 
 }
 
@@ -23,39 +23,81 @@ curl --silent "https://crt.sh/?q=$domain" | grep "<TD>" | grep -v white-space | 
 # Using api virustotal
 function apiVirusTotal () {
 apikey=`cat apikey.txt`
-wget -q -O - https://www.virustotal.com/vtapi/v2/domain/report\?apikey\=$apikey\&domain\=$domain |grep -o "\b\w*\.$domain\b" > subdomainAPI.txt
-echo -e "$domain\n$(cat subdomainAPI.txt)" | sort -u |  xargs -I {} ./check_status.sh  {}
+wget -q -O - https://www.virustotal.com/vtapi/v2/domain/report\?apikey\=$apikey\&domain\=$domain |grep -o "\b\w*\.$domain\b" > tmp/subdomainVirusTotal.txt
+echo -e "$domain\n$(cat tmp/subdomainVirusTotal.txt)" | sort -u |  xargs -I {} ./check_status.sh  {}
 }
+
+
+# banner 
+function banner () {
+echo " "
+echo "/ ___| _   _| |__  / ___| |__   ___  ___| | _____ _ __     "
+echo "\___ \| | | | '_ \| |   | '_ \ / _ \/ __| |/ / _ \ '__|    "
+echo " ___) | |_| | |_) | |___| | | |  __/ (__|   <  __/ |       "
+echo "|____/ \__,_|_.__/ \____|_| |_|\___|\___|_|\_\___|_|       "
+echo "                                                           "
+}
+
+
+#check wildcard DNS 
+function wildcardcheck () {
+
+#generate random string
+cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1 |  awk '{print $0"."}' > tmp/randomsub	
+subgen=`host $(cat tmp/randomsub)$domain`
+if [[ $subgen == *"has address"* ]]; then
+	echo "checking for DNS wildcard : YES "
+else 
+	echo "checking for DNS wildcard : NO"
+
+        fi
+}
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 if  [[ $option = "--EXT" ]]; then
-	echo -e "\e[0;31mYou are going to check the domain with an external website. (https://crt.sh)  \e[0m" 
+	banner 
+	echo -e "\e[1;31mYou are going to check the domain with an external website. (https://crt.sh)  \e[0m\n" 
 
+
+	 	
 dayRemaining "$domain"
 # draw a horizontal line 
 #printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 printf '%80s\n' | tr ' ' -
+
+wildcardcheck
+printf '%80s\n' | tr ' ' -
+
 parsingHTML $domain
 
 
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 elif [[ $option = "--API" ]]; then
-echo -e "\e[0;34mYou are going to check the domain with the VirusTotal API. \nPlease make sur you have copy your own api key in \"apikey.txt\" \e[0m"
+	banner 
+	echo -e "\e[1;31mYou are going to check the domain with the VirusTotal API. \nPlease make sur you have copy your own api key in \"apikey.txt\" \e[0m\n"
 
 dayRemaining "$domain"
 # draw a horizontal line 
 #printf '%*s\n' "${COLUMNS:-$(tput cols)}" '' | tr ' ' -
 printf '%80s\n' | tr ' ' -
+
+wildcardcheck
+printf '%80s\n' | tr ' ' -
+
 apiVirusTotal "$domain"
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 else
-	echo "Please choose an option (--EXT or --API)"
+	banner 
+	echo -e "Please choose an option (--EXT or --API)\n"  
+	echo -e "example : ./SubChecker.sh --EXT github.com"
+	echo -e "example : ./SubChecker.sh --API github.com"
 fi
 
 

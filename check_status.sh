@@ -16,7 +16,7 @@ fi
 function checkHTTPS () {
 if [[ "$statusHTTPS" -ge 201  && "$statusHTTPS" -lt 600 ]];
   then 
-	  echo -e "https://\e[0;34m$1 \e[0m"is used ! \(status code="\e[0;34m $statusHTTPS\e[0m"\) #'\U1F914'
+	 echo -e "https://\e[0;34m$1 \e[0m"is used ! \(status code="\e[0;34m $statusHTTPS\e[0m"\) #'\U1F914'
 	 printf '%70s\n' | tr ' ' -
 
 elif [[ $statusHTTPS -eq 200  ]]; then
@@ -24,7 +24,7 @@ elif [[ $statusHTTPS -eq 200  ]]; then
 	printf '%70s\n' | tr ' ' -
 
   else
-	 echo -e  "https://\e[0;31m$1 \e[0m"is not currently used. '\U274C'
+	echo -e  "https://\e[0;31m$1 \e[0m"is not currently used. '\U274C'
 	printf '%70s\n' | tr ' ' -
 
 fi
