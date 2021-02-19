@@ -10,7 +10,7 @@ whois $domain | grep "Registry Expiry Date" | cut -d'T' -f1 | cut -d':' -f2 | cu
 expiration=`cat tmp/expiration`
 date +"%y-%m-%d" > tmp/today
 today=`cat tmp/today`
-echo -e Registry expiry date "\e[1;29m $domain\e[0m" : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left 
+printf "Registry expiry date \e[1;29m $domain\e[0m : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left\n" 
 }
 
 
@@ -24,7 +24,7 @@ curl --silent "https://crt.sh/?q=$domain" | grep "<TD>" | grep -v white-space | 
 function apiVirusTotal () {
 apikey=`cat apikey.txt`
 wget -q -O - https://www.virustotal.com/vtapi/v2/domain/report\?apikey\=$apikey\&domain\=$domain |grep -o "\b\w*\.$domain\b" > tmp/subdomainVirusTotal.txt
-echo -e "$domain\n$(cat tmp/subdomainVirusTotal.txt)" | sort -u |  xargs -I {} ./check_status.sh  {}
+printf "$domain\n$(cat tmp/subdomainVirusTotal.txt)" | sort -u |  xargs -I {} ./check_status.sh  {}
 }
 
 
@@ -40,8 +40,7 @@ echo "             __                    ___        "
 echo "            |__) \ /    |__|  /\  |__  \_/    "
 echo "            |__)  |     |  | /~~\ |    / \    "
 
-
-echo -e "\n"
+printf "\n"
 }
 
 
@@ -64,7 +63,7 @@ else
 
 banner
 if  [[ $option = "--EXT" ]]; then
-	echo -e "\e[1;31mYou are going to check the domain with an external website. (https://crt.sh)  \e[0m\n" 
+	printf "\e[1;31mYou are going to check the domain with an external website. (https://crt.sh)  \e[0m\n\n" 
 
 
 	 	
@@ -82,7 +81,7 @@ parsingHTML $domain
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 elif [[ $option = "--API" ]]; then
-	echo -e "\e[1;31mYou are going to check the domain with the VirusTotal API. \nPlease make sur you have copy your own api key in \"apikey.txt\" \e[0m\n"
+	printf "\e[1;31mYou are going to check the domain with the VirusTotal API. \nPlease make sur you have copy your own api key in \"apikey.txt\" \e[0m\n\n"
 
 dayRemaining "$domain"
 # draw a horizontal line 
@@ -98,9 +97,9 @@ apiVirusTotal "$domain"
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 else
-	echo -e "Please choose an option (--EXT or --API)\n"  
-	echo -e "example : ./SubChecker.sh --EXT github.com"
-	echo -e "example : ./SubChecker.sh --API github.com"
+	printf "Please choose an option (--EXT or --API)\n"  
+	printf "example : ./SubChecker.sh --EXT github.com"
+	printf "example : ./SubChecker.sh --API github.com"
 fi
 
 
