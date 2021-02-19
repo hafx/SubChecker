@@ -28,14 +28,23 @@ echo -e "$domain\n$(cat tmp/subdomainVirusTotal.txt)" | sort -u |  xargs -I {} .
 }
 
 
-# banner 
+# banner
 function banner () {
-echo " "
-echo "/ ___| _   _| |__  / ___| |__   ___  ___| | _____ _ __     "
-echo "\___ \| | | | '_ \| |   | '_ \ / _ \/ __| |/ / _ \ '__|    "
-echo " ___) | |_| | |_) | |___| | | |  __/ (__|   <  __/ |       "
-echo "|____/ \__,_|_.__/ \____|_| |_|\___|\___|_|\_\___|_|       "
-echo "                                                           "
+echo "   _____       _      _____ _               _              "
+echo "  / ____|     | |    / ____| |             | |             "
+echo " | (___  _   _| |__ | |    | |__   ___  ___| | _____ _ __  "
+echo "  \___ \| | | | '_ \| |    | '_ \ / _ \/ __| |/ / _ \ '__| "
+echo "  ____) | |_| | |_) | |____| | | |  __/ (__|   <  __/ |    "
+echo " |_____/ \__,_|_.__/ \_____|_| |_|\___|\___|_|\_\___|_|    "
+echo "         _                 _            __                 "
+echo "        | |               | |          / _|                "
+echo "        | |__  _   _      | |__   __ _| |___  __           "
+echo "        | '_ \| | | |     | '_ \ / _  |  _\ \/ /           "
+echo "        | |_) | |_| |     | | | | (_| | |  >  <            "
+echo "        |_.__/ \__, |     |_| |_|\__,_|_| /_/\_\           "
+echo "                __/ |                                      "
+echo "               |___/                                       "
+echo -e "\n"
 }
 
 
@@ -56,9 +65,8 @@ else
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
+banner
 if  [[ $option = "--EXT" ]]; then
-	banner 
 	echo -e "\e[1;31mYou are going to check the domain with an external website. (https://crt.sh)  \e[0m\n" 
 
 
@@ -77,7 +85,6 @@ parsingHTML $domain
 #--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 elif [[ $option = "--API" ]]; then
-	banner 
 	echo -e "\e[1;31mYou are going to check the domain with the VirusTotal API. \nPlease make sur you have copy your own api key in \"apikey.txt\" \e[0m\n"
 
 dayRemaining "$domain"
@@ -94,7 +101,6 @@ apiVirusTotal "$domain"
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 else
-	banner 
 	echo -e "Please choose an option (--EXT or --API)\n"  
 	echo -e "example : ./SubChecker.sh --EXT github.com"
 	echo -e "example : ./SubChecker.sh --API github.com"
