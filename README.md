@@ -1,9 +1,48 @@
-# about SubChecker
+
+# SubChecker
+<pre>
+/ ___| _   _| |__  / ___| |__   ___  ___| | _____ _ __ 
+\___ \| | | | '_ \| |   | '_ \ / _ \/ __| |/ / _ \ '__|
+ ___) | |_| | |_) | |___| | | |  __/ (__|   <  __/ |   
+|____/ \__,_|_.__/ \____|_| |_|\___|\___|_|\_\___|_|
+</pre>
+
 SubChecker is a bash script to enumerate subdomains of websites using the Public API of VirusTotal (or https://crt.sh).  
 With this script you will be able to : 
 - enumerate subdomains.
 - checking if subdomains web server is working, used or not.
-- calculate the number of days remaining before the registry expiration date (using `whois`).
+- calculate the number of days remaining before the registry expiration date.
+- checking for DNS wildcard 
+
+# Screenshot
+![SubChecker](./screenshot/screenshot.png "SubChecker")
+
+
+# Usage 
+1. git clone `https://github.com/hafx/SubChecker.git`
+2. Open your favourite terminal and run the script.  
+`./SubChecker.sh [option] "domain"`
+
+| Long form | Description                                                     |
+|-----------|-----------------------------------------------------------------|
+| --EXT     | Parsing an external HTML to find all subdomains (https://crt.sh)|
+| --API     | Using the virustotal API to find all subdomains                 |
+
+# Example 
+`./SubChecker.sh --EXT github.com`  
+`./SubChecker.sh --API github.com`
+
+# How it works ?
+1. Calculate the number of days remaining before the registry expiration date (using `whois`).
+2. Checking for DNS wildcard (using `host [randomstring].domain`)   
+3. Enumerating subdomains (using API or crt.sh).   
+All subdomains found go through a `curl -s -m2 --head http(s)://subdomain` to check the HTTP status codes.   
+If the output of this command is empty then the subdomain appear as not being used.  
+
+# Color meaning 
+- Green : the web server is working (status code = 200) :+1:
+- Blue : the subdomain is used (status code = [201,599] redirection, client error, server error, ...) 
+- Red : the subdomain is not used :x: 
 
 # Virustotal API
 https://developers.virustotal.com/reference#getting-started 
@@ -13,15 +52,6 @@ The Public API must not be used in commercial products, services or business wor
 The Private API returns more threat data and exposes more endpoints.
 The Private API is governed by an SLA that guarantees readiness of data.
 ~~~
-# How it works ?
-1. Enumerating subdomains (using API or crt.sh)
-2. All subdomains found go through a `curl -s -m2 --head http(s)://subdomain` to check the HTTP status codes.  
-If the output of this command is empty then the subdomain appear as not being used.
-
-# Color meaning 
-- Green : the web server is working (status code = 200) :+1:
-- Blue : the subdomain is used (status code = [201,599] redirection, client error, server error, ...) 
-- Red : the subdomain is not used :x: 
 
 # HTTP Status Codes
 ~~~  
@@ -98,73 +128,15 @@ If the output of this command is empty then the subdomain appear as not being us
 - [ ] Add SSL certificate expiration date for subdomains.
 - [ ] Make a table for easier readability. 
 - [x] Add HTTP status code for each subdomain.
+- [ ] Specify a list of TCP port to scan.
 
-# Usage 
-1. git clone `https://github.com/hafx/SubChecker.git`
-2. Open your favourite terminal and run the script.  
-`./SubChecker.sh [option] "domain"`
+# License 
+SubChecker is licensed under the GPL-3.0 License . Take a look at the [LICENSE](https://github.com/hafx/SubChecker/blob/main/LICENSE) for more information.
 
-| Long form | Description                                                     |
-|-----------|-----------------------------------------------------------------|
-| --EXT     | Parsing an external HTML to find all subdomains (https://crt.sh)|
-| --API     | Using the virustotal API to find all subdomains                 |
+# Version 
+Current version is 1.0
 
 
 
-# Example 
-`./SubChecker.sh --EXT github.com`  
-`./SubChecker.sh --API github.com`
-~~~ 
-You are going to check the domain with the VirusTotal API. 
-Please make sur you have copy your own api key in "apikey.txt" 
-Registry expiry date  github.com : 598 days left
---------------------------------------------------------------------------------
-...
-http://help.github.com is used ! (status code= 301)
-https://help.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://hpneo.github.com is used ! (status code= 301)
-https://hpneo.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://iad.github.com is not used.❌
-https://iad.github.com is not used. ❌
-----------------------------------------------------------------------
-http://ichord.github.com is used ! (status code= 301)
-https://ichord.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://inspirit.github.com is used ! (status code= 301)
-https://inspirit.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jackaudio.github.com is used ! (status code= 301)
-https://jackaudio.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jackpal.github.com is used ! (status code= 301)
-https://jackpal.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jamesflorentino.github.com is used ! (status code= 301)
-https://jamesflorentino.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://javasoze.github.com is used ! (status code= 301)
-https://javasoze.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jaymorrow.github.com is used ! (status code= 301)
-https://jaymorrow.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jdewit.github.com is used ! (status code= 301)
-https://jdewit.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jeromeetienne.github.com is used ! (status code= 301)
-https://jeromeetienne.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jobs.github.com is used ! (status code= 301)
-https://jobs.github.com is working ! (status code= 200) 👍
-----------------------------------------------------------------------
-http://joelpurra.github.com is used ! (status code= 301)
-https://joelpurra.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-http://jonpauldavies.github.com is used ! (status code= 301)
-https://jonpauldavies.github.com is used ! (status code= 301)
-----------------------------------------------------------------------
-...
-~~~ 
+
 
