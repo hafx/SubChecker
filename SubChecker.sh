@@ -8,9 +8,25 @@ domain=$2
 function dayRemaining () {
 whois $domain | grep "Registry Expiry Date" | cut -d'T' -f1 | cut -d':' -f2 | cut -d ' ' -f2 > tmp/expiration
 expiration=`cat tmp/expiration`
+
+
+
+string=`uname -s`
+if [[ $string == *"Linux"* ]]; then
+#Linux
 date +"%y-%m-%d" > tmp/today
 today=`cat tmp/today`
-printf "Registry expiry date \e[1;29m $domain\e[0m : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left\n" 
+printf "Registry expiry date \e[1;29m $domain\e[0m : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left\n"
+
+else
+#OSX/BSD
+
+#date +"%y-%m-%d" > tmp/today
+#today=`cat tmp/today`
+#printf "Registry expiry date \e[1;29m $domain\e[0m : $(( ($(date -d $expiration +%s) - $(date -d $today +%s)) / 86400 )) days left\n"
+	
+printf "If OSX works for you, then use it.\U1F4B0\n"
+fi
 }
 
 
