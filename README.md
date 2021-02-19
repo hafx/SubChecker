@@ -15,7 +15,7 @@ With this script you will be able to :
 - checking for DNS wildcard 
 
 # Screenshot
-![SubChecker](./screenshot/screenshot.png "SubChecker")
+![SubChecker](./screenshot/subchecker.png "SubChecker")
 
 
 # Usage 
